@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Silkscreen";
+    font-weight: 400;
+    src: url("../public/font/Silkscreen-Regular.ttf"); 
+}
+
+*{
+    font-family: "Silkscreen", sans-serif;
+}

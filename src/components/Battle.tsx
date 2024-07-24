@@ -18,12 +18,12 @@ const Battle = () =>{
         FetchOponent()
     },[])
     const FetchPet = async() =>{
-        const pets = await axios.get("http://localhost:8080/api/list_pet");
+        const pets = await axios.get("https://joygotchi.vercel.app/api/list_pet");
         //console.log("listpet",pets.data)
         setPetLists(pets.data)
     }
     const FetchOponent = async() =>{
-        const oponents = await axios.get("http://localhost:8080/api/list_pet_battle");
+        const oponents = await axios.get("https://joygotchi.vercel.app/api/list_pet_battle");
         //console.log("listpet",pets.data)
         setListOponent(oponents.data)
     }

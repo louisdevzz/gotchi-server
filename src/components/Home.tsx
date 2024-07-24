@@ -53,7 +53,7 @@ const Home = () =>{
     }
 
     const FetchPet = async() =>{
-        const pets = await axios.get("http://localhost:8080/api/list_pet");
+        const pets = await axios.get("https://joygotchi.vercel.app/api/list_pet");
         //console.log("listpet",pets.data)
         setPetLists(pets.data)
         localStorage.setItem("namePet",pets.data[0].name)

@@ -1,7 +1,9 @@
 import {BrowserRouter,Routes,Route} from 'react-router-dom'
-import Home from "@/components/Home"
-import Battle from "@/components/Battle"
-import Mint from "@/components/Mint"
+import Home from "@/pages/Home"
+import Battle from "@/pages/Battle"
+import Mint from "@/pages/Mint"
+import Mission from '@/pages/Mission'
+import Space from '@/pages/Space'
 
 const App = () =>{
     return(
@@ -10,6 +12,8 @@ const App = () =>{
           <Route path="/" element={<Home/>} />
           <Route path="/battle" element={<Battle/>} />
           <Route path="/mint" element={<Mint/>} />
+          <Route path="/mission" element={<Mission/>} />
+          <Route path="/space" element={<Space/>} />
         </Routes>
       </BrowserRouter>
     )

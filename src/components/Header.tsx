@@ -1,17 +1,57 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { HereWallet } from "@here-wallet/core";
+import { initHere,signOut,signIn } from "@/hooks/hereWallet";
 
 const Header = () =>{
     const [account,setAccount] = useState<string|null>(null);
     const [isShow, setIsShow] = useState<boolean>(false);
     const [status, setStatus] = useState<string|null>(null);
     const namePet = localStorage.getItem("namePet")??"-";
+    let here: HereWallet;
 
+    useEffect(()=>{
+        loadAccount()
+    },[])
+
+    const loadAccount = async() =>{
+        try{
+            here = await initHere();
+            if(!here) return;
+            if(await here.isSignedIn()) {
+                const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
+                if (accounts.length > 0) {
+                    setAccount(accounts[0]);
+                }
+            }
+        }
+        catch (error){
+            console.error(error);
+            throw error;
+        }
+    }
     
+    const handlelogout = async () => {
+        here = await initHere();
+        if(!here) return;
+        if(await here.isSignedIn()) {
+            await signOut()
+            setAccount(null);
+        }
+        
+    }
+
+    const instantSignin = async () => {
+        await signIn();
+        const accounts = await here.getAccounts();
+        if (accounts.length > 0) {
+            setAccount(accounts[0]);
+        }
+    };
+
     const truncateString = (str: string)=>{
-        const format = str.replace(".near","");
-        if(format.length > 6) return format.slice(0,2)+'...'+format.slice(-2)+".near";
-        return format+".near"
+        const format = str.replace(".tg","");
+        if(format.length > 6) return format.slice(0,2)+'...'+format.slice(-2)+".tg";
+        return format+".tg"
     }
     
     const onChangeName = () =>{
@@ -74,11 +114,11 @@ const Header = () =>{
                     <div className="flex flex-row gap-4 mt-5 items-center">
                     {
                         account?(
-                        <div className="px-2 py-0.5 h-8 rounded-full bg-[#a9c6e4]">
-                            <small className="">{truncateString("justonly.near")}</small>
+                        <div onClick={handlelogout} className="px-2 cursor-pointer py-0.5 h-8 rounded-full bg-[#a9c6e4]">
+                            <small className="">{truncateString(account)}</small>
                         </div>
                         ):(
-                        <button className="px-2 h-8 rounded-full bg-[#a9c6e4]">
+                        <button onClick={instantSignin} className="px-2 h-8 rounded-full bg-[#a9c6e4]">
                             <small className="font-semibold">Connect</small>
                         </button>
                         )

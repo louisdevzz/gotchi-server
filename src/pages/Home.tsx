@@ -1,21 +1,15 @@
 import { useEffect, useState } from "react";
-// import { Silkscreen as FontSilkscreen} from "next/font/google"
 import { HereWallet } from "@here-wallet/core";
-import ImageSlider from "./ImageSlider";
-import CountDownTimer from "./CountDownTimer";
-import Footer from "./Footer";
+import ImageSlider from "../components/ImageSlider";
+import CountDownTimer from "../components/CountDownTimer";
+import Footer from "../components/Footer";
 import axios from "axios";
-import {  utils } from "near-api-js";
-import Tabs from "./Tabs";
+import { utils } from "near-api-js";
+import Tabs from "../components/Tabs";
+import { initHere,signOut,signIn } from "@/hooks/hereWallet";
 
-
-// const Silkscreen = FontSilkscreen({
-//     subsets: ["latin"],
-//     weight:"400",
-// })
 
 const Home = () =>{
-    const [accountId,setAccountId] = useState<string|null>(null);
     const [namePet,setNamePet] = useState<string>("DRAGON GREEN");
     const [petLists, setPetLists] = useState<any>([]);
     const [index, setIndex] = useState<number>(0);
@@ -25,23 +19,55 @@ const Home = () =>{
     const [isShow, setIsShow] = useState<boolean>(false);
     const [status, setStatus] = useState<string|null>(null);
     const seconds = Number(localStorage.getItem("seconds"))??0;
-
+    let here: HereWallet;
 
     useEffect(()=>{
         localStorage.setItem("linkIndex",'0')
         FetchPet();
+        loadAccount()
     },[])
 
 
+    const loadAccount = async() =>{
+        try{
+            here = await initHere();
+            if(!here) return;
+            if(await here.isSignedIn()) {
+                const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
+                if (accounts.length > 0) {
+                    setAccount(accounts[0]);
+                }
+            }
+        }
+        catch (error){
+            console.error(error);
+            throw error;
+        }
+    }
+
+    const handlelogout = async () => {
+        here = await initHere();
+        if(!here) return;
+        if(await here.isSignedIn()) {
+            await signOut()
+            setAccount(null);
+        }
+        
+    }
+
+
     const instantSignin = async () => {
-        const here = await HereWallet.connect();
-        const account = await here.signIn({ contractId: "social.near" });
-        console.log(`Hello ${account}!`);
+        await signIn();
+        const accounts = await here.getAccounts();
+        if (accounts.length > 0) {
+            setAccount(accounts[0]);
+        }
     };
+
     const truncateString = (str: string)=>{
-        const format = str.replace(".near","");
-        if(format.length > 6) return format.slice(0,2)+'...'+format.slice(-2)+".near";
-        return format+".near"
+        const format = str.replace(".tg","");
+        if(format.length > 6) return format.slice(0,2)+'...'+format.slice(-2)+".tg";
+        return format+".tg"
     }
     
     const onChangeName = () =>{
@@ -77,10 +103,10 @@ const Home = () =>{
         })
         console.log("tx",tx)
     }
-
+    console.log(account)
 return(
     <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
-        <div className="bg-[#e5f2f8] md:w-[390px] max-w-[390px] md h-full relative">
+        <div className="bg-[#e5f2f8] md:w-[390px] md h-full relative">
             <div className="w-full h-full sticky top-0 z-20">
                 {status&&(
                         <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
@@ -132,8 +158,8 @@ return(
                         <div className="flex flex-row gap-4 mt-5 items-center">
                         {
                             account?(
-                            <div className="px-2 py-0.5 h-8 rounded-full bg-[#a9c6e4]">
-                                <small className="">{truncateString("justonly.near")}</small>
+                            <div onClick={handlelogout} className="px-2 cursor-pointer py-0.5 h-8 rounded-full bg-[#a9c6e4]">
+                                <small className="">{truncateString(account)}</small>
                             </div>
                             ):(
                             <button onClick={instantSignin} className="px-2 h-8 rounded-full bg-[#a9c6e4]">
@@ -149,7 +175,7 @@ return(
                     </div>
                 </div>
             </div>
-            <div className="h-full max-w-[390px] flex flex-col flex-1 relative">
+            <div className="h-full w-full flex flex-col flex-1 relative">
                 <div className="p-3 h-full flex flex-col relative w-full">
                     <div className="flex flex-col">
                     <div className="mt-2 h-full">

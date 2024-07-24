@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
+    "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -19,6 +19,7 @@
     "near-api-js": "^0.44.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "url": "^0.11.3",
     "vite-plugin-mix": "^0.4.0",
     "vite-plugin-node-polyfills": "^0.22.0"
   },

@@ -5,7 +5,7 @@ import Mint from "@/components/Mint"
 
 const App = () =>{
     return(
-      <BrowserRouter>
+      <BrowserRouter basename='/'>
         <Routes>
           <Route path="/" element={<Home/>} />
           <Route path="/battle" element={<Battle/>} />

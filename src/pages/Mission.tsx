@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 const Mission = () =>{
     return(
         <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
-            <div className="bg-[#e5f2f8] md:w-[390px] h-full relative">
+            <div className="bg-[#e5f2f8] screen w-full h-full relative">
                 <Header/>
                 <div className="h-screen w-full relative">
                     <div className="mt-8 px-2 flex flex-col gap-3">

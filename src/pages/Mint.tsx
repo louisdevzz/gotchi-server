@@ -1,11 +1,13 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-const Mint = () =>{
 
+
+const Mint = () =>{
+    
     return(
         <div className={`flex flex-col justify-center items-center w-full h-full bg-[#b8e3f8]`}>
-            <div className="bg-[#e5f2f8] md:w-[380px] h-full">
+            <div className="bg-[#e5f2f8] screen w-full h-full">
                 <Header/>
                 <div className="h-full">
                     <div className="mt-8 px-2">

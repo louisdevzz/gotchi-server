@@ -13,12 +13,13 @@ const Home = () =>{
     const [namePet,setNamePet] = useState<string>("DRAGON GREEN");
     const [petLists, setPetLists] = useState<any>([]);
     const [index, setIndex] = useState<number>(0);
-    const [hereWallet, setHereWallet] = useState<any|null>(null)
     const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
     const [account,setAccount] = useState<string|null>(null);
     const [isShow, setIsShow] = useState<boolean>(false);
     const [status, setStatus] = useState<string|null>(null);
     const seconds = Number(localStorage.getItem("seconds"))??0;
+
+
     let here: HereWallet;
 
     useEffect(()=>{
@@ -86,27 +87,28 @@ const Home = () =>{
         localStorage.setItem("seconds",JSON.stringify(pets.data[0].time_until_starving/10000000))
     }
 
-    const onBuyAccessory = async(itemId:any) =>{
-        const tx = hereWallet.signAndSendTransaction({
-        receiverId: "game1.joychi.testnet",
-        actions: [
-            {
-            type: "FunctionCall",
-            params: {
-            methodName: "buy_item",
-            args: {"pet_id": petLists[index].pet_id, "item_id": itemId },
-            gas: BOATLOAD_OF_GAS,
-            deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
-            },
-            },
-        ],
-        })
-        console.log("tx",tx)
-    }
+    // const onBuyAccessory = async(itemId:any) =>{
+    //     const tx = hereWallet.signAndSendTransaction({
+    //     receiverId: "game1.joychi.testnet",
+    //     actions: [
+    //         {
+    //         type: "FunctionCall",
+    //         params: {
+    //         methodName: "buy_item",
+    //         args: {"pet_id": petLists[index].pet_id, "item_id": itemId },
+    //         gas: BOATLOAD_OF_GAS,
+    //         deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
+    //         },
+    //         },
+    //     ],
+    //     })
+    //     console.log("tx",tx)
+    // }
     console.log(account)
 return(
+    <>
     <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
-        <div className="bg-[#e5f2f8] md:w-[390px] md h-full relative">
+        <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg md h-full relative">
             <div className="w-full h-full sticky top-0 z-20">
                 {status&&(
                         <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
@@ -218,6 +220,8 @@ return(
             <Footer/>
         </div>
     </div>
+    </>
+    
   )
 }
 

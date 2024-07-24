@@ -37,7 +37,7 @@ const Battle = () =>{
 
     return(
         <div className={`flex flex-col justify-center items-center w-full h-full bg-[#b8e3f8]`}>
-            <div className="bg-[#e5f2f8] md:w-[380px] h-full">
+            <div className="bg-[#e5f2f8] screen w-full h-full">
                 <Header/>
                 <div className="mt-5 text-center flex justify-center flex-row">
                     <p className="text-black px-2 py-1 bg-slate-400 w-2/3 rounded-lg">Next Attack: 00:15:00</p>

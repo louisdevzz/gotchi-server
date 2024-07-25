@@ -38,11 +38,11 @@ const Space = () =>{
                 )}
                 <Header/>
                 <div className="h-full text-black relative">
-                    <div className="mt-8 px-2">
+                    <div className="mt-3 px-2">
                         <div className="px-3 py-2 items-center text-black w-full flex justify-between rounded-lg border-2 border-[#2d3c53] bg-[#97b5d5] bg-opacity-40">
                             <div className="flex flex-col gap-1">
                                 <span>Peacekeepers</span>
-                                <span>ID: 3765</span>
+                                <span>ID: 3765</span>
                             </div>
                             <div className="flex flex-col items-center gap-1">
                                 <div className="flex flex-row gap-2 items-center">

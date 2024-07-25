@@ -4,6 +4,7 @@ import Battle from "./pages/Battle";
 import Mission from "./pages/Mission";
 import Space from "./pages/Space";
 import Mining from "./pages/Mining";
+import Mint from "./pages/Mint";
 
 const App = () =>{
     return useRoutes([
@@ -26,6 +27,10 @@ const App = () =>{
       {
         path: "space",
         element: <Space/>
+      },
+      {
+        path: "mint",
+        element: <Mint/>
       }
     ])
 }

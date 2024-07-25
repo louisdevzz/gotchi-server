@@ -9,7 +9,7 @@ const Settings = () =>{
         alert("Copied")
     }
     return(
-        <div className="h-screen w-full flex flex-col">
+        <div className="h-full w-full flex flex-col">
             <div className="mt-3 border-2 border-[#304053] h-12 w-full flex flex-row justify-between items-center p-2 rounded-lg">
                 <span className="text-black">Wallet address</span>
                 <div className="flex cursor-pointer flex-row gap-1" onClick={copyAddress}>

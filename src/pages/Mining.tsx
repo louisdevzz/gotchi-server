@@ -73,6 +73,7 @@ const Mining = () =>{
                             </div>
                         </div>
                     </div>
+                    <div className="clear"/>
                 </div>
                 <Footer/>
             </div>

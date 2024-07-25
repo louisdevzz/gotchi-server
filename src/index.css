@@ -144,3 +144,17 @@ button,a{
 .arrow{
   transform: rotateX(180deg);
 }
+
+.clear{
+  height: 80px;
+  @media screen and (min-width: 560px) {
+    height: 0;
+  }
+}
+
+.swap{
+  height: 90px;
+  @media screen and (min-width: 560px) {
+    height: 0;
+  }
+}

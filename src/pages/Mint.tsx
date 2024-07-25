@@ -26,8 +26,11 @@ const Mint = () =>{
                             <Settings/>
                         )}
                     </div>
+                    <div className="clear"/>
                 </div>
+                
                 <Footer/>
+                
             </div>
         </div>
     )

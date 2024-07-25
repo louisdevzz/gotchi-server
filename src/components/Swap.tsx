@@ -43,6 +43,7 @@ const Swap = () =>{
                     <span className="text-white font-semibold text-xl">SWAP</span>
                 </button>
             </div>
+            <div className="swap"/>
         </div>
     )
 }

@@ -176,6 +176,7 @@ const Battle = () =>{
                             }
                         </button>
                     </div>
+                    <div className="clear"/>
                 </div>
                 <Footer/>
             </div>

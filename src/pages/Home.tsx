@@ -104,7 +104,7 @@ const Home = () =>{
     //     })
     //     console.log("tx",tx)
     // }
-    console.log(account)
+    //console.log(account)
 return(
     <>
     <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
@@ -161,7 +161,7 @@ return(
                         {
                             account?(
                             <div onClick={handlelogout} className="px-2 cursor-pointer py-0.5 h-8 rounded-full bg-[#a9c6e4]">
-                                <small className="">{truncateString(account)}</small>
+                                <small className="text-white">{truncateString(account)}</small>
                             </div>
                             ):(
                             <button onClick={instantSignin} className="px-2 h-8 rounded-full bg-[#a9c6e4]">
@@ -186,7 +186,7 @@ return(
                             <div className="flex flex-row justify-between">
                                 {/* <img width={10} height={10} className="w-6 h-6 absolute top-1/2 left-[70px] " src="/assets/icon/arrow_left.png" alt="arrow" /> */}
                                 {/* <img width={150} className="absolute top-1/2 left-[53%] transform -translate-x-1/2 -translate-y-1/2" src="/assets/pet/pet.png" alt="pet" /> */}
-                                <div className="absolute top-1/2 left-[50%] transform -translate-x-1/2 -translate-y-1/2">
+                                <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
                                 <ImageSlider petList={petLists} changeName={setNamePet} setIndex={setIndex}/>
                                 </div>
                                 {/* <img width={10} height={10} className="w-6 h-6 absolute top-1/2 right-[60px] " src="/assets/icon/arrow_right.png" alt="arrow" /> */}

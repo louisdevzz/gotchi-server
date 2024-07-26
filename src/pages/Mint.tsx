@@ -5,10 +5,14 @@ import TabsMint from "@/components/TabsMint";
 import MintNFT from "@/components/MintNFT";
 import Swap from "@/components/Swap";
 import Settings from "@/components/Settings";
-
+import { useLocation } from "react-router-dom";
 
 const Mint = () =>{
-    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const params = useLocation();
+    const [currentIndex, setCurrentIndex] = useState<number>(params.search?Number(params.search.replace("?tab=","")):0)
+    
+    console.log(params.search)
+
     return(
         <div className={`flex flex-col justify-center items-center w-full h-full bg-[#b8e3f8]`}>
             <div className="bg-[#e5f2f8] screen w-full h-full">

@@ -21,8 +21,7 @@ export const initHere = async(): Promise<HereWallet> => {
 }
 
 export const signIn = async () : Promise<any> => {
-  const accountName = await wallet.signIn({ contractId: CONTRACT_ID });
-  return accountName;
+  await wallet.signIn({ contractId: CONTRACT_ID });
 }
 
 export const signOut = async() => {

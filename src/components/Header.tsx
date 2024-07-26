@@ -1,6 +1,7 @@
 import { useState,useEffect } from "react";
 import { HereWallet } from "@here-wallet/core";
 import { initHere,signOut,signIn } from "@/hooks/hereWallet";
+import { Link } from "react-router-dom";
 
 const Header = () =>{
     const [account,setAccount] = useState<string|null>(null);
@@ -30,22 +31,9 @@ const Header = () =>{
         }
     }
     
-    const handlelogout = async () => {
-        here = await initHere();
-        if(!here) return;
-        if(await here.isSignedIn()) {
-            await signOut()
-            setAccount(null);
-        }
-        
-    }
 
     const instantSignin = async () => {
         await signIn();
-        const accounts = await here.getAccounts();
-        if (accounts.length > 0) {
-            setAccount(accounts[0]);
-        }
     };
 
     const truncateString = (str: string)=>{
@@ -80,9 +68,9 @@ const Header = () =>{
                     <div className="flex flex-row gap-4 items-center">
                     {
                         account?(
-                        <div onClick={handlelogout} className="px-2 cursor-pointer py-0.5 h-8 rounded-full bg-[#a9c6e4]">
+                        <Link to={"/mint?tab=2"} className="px-2 cursor-pointer py-0.5 h-8 rounded-full bg-[#a9c6e4]">
                             <small className="text-white">{truncateString(account)}</small>
-                        </div>
+                        </Link>
                         ):(
                         <button onClick={instantSignin} className="px-2 h-8 rounded-full bg-[#a9c6e4] text-white">
                             <small className="font-semibold">Connect</small>

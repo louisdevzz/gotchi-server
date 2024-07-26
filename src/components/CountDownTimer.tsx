@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 
 interface commentProp {
   seconds: number;
+  setIsDisable?: any
 }
 
-const CountDownTimer = ({ seconds }: commentProp) => {
+const CountDownTimer = ({ seconds,setIsDisable }: commentProp) => {
   const [remainSecond, setRemainSecond] = useState(0);
 
   useEffect(() => {
@@ -15,9 +16,10 @@ const CountDownTimer = ({ seconds }: commentProp) => {
       const pastSeconds = (Date.now() - startTime) / 1000;
       const remain = countDownSecond - pastSeconds;
       setRemainSecond(remain < 0 ? 0 : remain);
-
+      
       if (remain <= 0) {
         clearInterval(countDown);
+        setIsDisable(false)
       }
     }, 1000);
 

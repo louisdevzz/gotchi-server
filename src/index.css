@@ -152,6 +152,13 @@ button,a{
   }
 }
 
+.clean{
+  height: 120px;
+  @media screen and (min-width: 560px) {
+    height: 0;
+  }
+}
+
 .swap{
   height: 90px;
   @media screen and (min-width: 560px) {

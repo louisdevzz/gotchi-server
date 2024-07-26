@@ -1,19 +1,58 @@
 'use client'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
+import { HereWallet } from "@here-wallet/core";
+import { initHere,signOut } from "@/hooks/hereWallet";
 
 const Settings = () =>{
     const [isSound, setIsSound] = useState<boolean>(false);
-    const copyAddress = () => {
-        navigator.clipboard.writeText('huunhanz-hot.tg')
-        alert("Copied")
+    const [account, setAccount] = useState<string|null>(null);
+    let here: HereWallet;
+
+    useEffect(()=>{
+        loadAccount()
+    },[])
+
+    const loadAccount = async() =>{
+        try{
+            here = await initHere();
+            if(!here) return;
+            if(await here.isSignedIn()) {
+                const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
+                if (accounts.length > 0) {
+                    setAccount(accounts[0]);
+                }
+            }
+        }
+        catch (error){
+            console.error(error);
+            throw error;
+        }
     }
+
+    const copyAddress = () => {
+        if(account){
+            navigator.clipboard.writeText(account as string)
+            alert("Copied")
+        }
+    }
+
+    const handlelogout = async () => {
+        here = await initHere();
+        if(!here) return;
+        if(await here.isSignedIn()) {
+            await signOut();
+            location.replace("/")
+        }
+        
+    }
+
     return(
         <div className="h-full w-full flex flex-col">
             <div className="mt-3 border-2 border-[#304053] h-12 w-full flex flex-row justify-between items-center p-2 rounded-lg">
                 <span className="text-black">Wallet address</span>
                 <div className="flex cursor-pointer flex-row gap-1" onClick={copyAddress}>
-                    <span className="text-black">huunhanz-hot.tg</span>
+                    <span className="text-black">{account?account:"-"}</span>
                     <img width={15} src="/assets/icon/copy.svg" alt="copy" />
                 </div>
             </div>
@@ -44,7 +83,7 @@ const Settings = () =>{
                     <span>0.001</span>
                 </div>
             </div>
-            <button className="w-full mt-4 bg-[#304053] hover:bg-opacity-85 rounded-lg h-14">
+            <button onClick={handlelogout} className="w-full mt-4 bg-[#304053] hover:bg-opacity-85 rounded-lg h-14">
                 <span className="text-xl">LOG OUT</span>
             </button>
             <div className="flex flex-col mt-5 gap-2">

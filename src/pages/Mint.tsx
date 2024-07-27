@@ -15,8 +15,9 @@ const Mint = () =>{
 
     return(
         <div className={`flex flex-col justify-center items-center w-full h-full bg-[#b8e3f8]`}>
+            <Header/>
             <div className="bg-[#e5f2f8] screen w-full h-full">
-                <Header/>
+                
                 <div className="h-full">
                     <div className="mt-4 px-2">
                         <div className="mb-5">

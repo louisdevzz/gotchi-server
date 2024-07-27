@@ -4,7 +4,6 @@ import Footer from "@/components/Footer";
 import BattleLayout from "@/components/BattleLayout";
 import { callFunction, callFunctionST, initHere, viewFunction } from "@/hooks/hereWallet";
 import Layout from "@/components/Layout";
-import WebApp from "@twa-dev/sdk";
 
 
 const Battle = () =>{
@@ -16,6 +15,8 @@ const Battle = () =>{
     const [currentIndexPet, setCurrentIndexPet] = useState<number>(0||Number(localStorage.getItem("indexPet")));
     const [isShow, setIsShow] = useState<boolean>(false);
     const [isAttack, setIsAttack] = useState<boolean>(false)
+    const [error, setError] = useState<string|null>(null)
+    const [status, setStauts] = useState<string|null>(null) 
     
     useEffect(()=>{
         loadAccount()
@@ -69,12 +70,24 @@ const Battle = () =>{
                 setTimeout(()=>{
                     setIsAttack(false)
                 },220)
+                setStauts("Attack Successfull!")
+                setTimeout(()=>{
+                    setStauts(null)
+                },1000)
                 console.log("tx",tx)
             }else{
                 console.log("error")
+                setError("Pet not alive!")
+                setTimeout(()=>{
+                    setError(null)
+                },1000)
             }    
         }catch(err){
             console.log(err)
+            setError(error)
+            setTimeout(()=>{
+                setError(null)
+            },1000)
         }
     }
 
@@ -84,14 +97,30 @@ const Battle = () =>{
 
     return(
         !loading?
-        <div className={`flex flex-col justify-center items-center w-full h-screen bg-[#b8e3f8]`}>
+        <div className={`flex flex-col justify-center items-center w-full h-screen bg-[#b8e3f8] overflow-hidden`}>
             <Header/>
+            {status&&(
+                    <div className="fixed z-50 bg-[#d4edda] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#c3e6cb] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                        <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                            <img width={22} src="/assets/icon/success.svg" alt="success" />
+                            <small className="text-[#155724] text-sm font-semibold">{status}</small>
+                        </div>
+                    </div>
+            )}
+            {error&&(
+                <div className="fixed z-50 bg-[#f8d7da] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#FF0000] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                    <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                        <img width={22} src="/assets/icon/error.svg" alt="error" />
+                        <small className="text-[#FF0000] text-sm font-semibold">{error}</small>
+                    </div>
+                </div>
+            )}
             <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg h-screen relative">
                 
                 {/* <div className="mt-3 text-center flex justify-center flex-row px-2">
                     <p className="text-black px-2 py-1 bg-slate-400 w-full rounded-lg">Next Attack: 00:15:00</p>
                 </div> */}
-                <div className="px-2 mt-2 relative fix-screen w-full h-full">
+                <div className="px-2 mt-2 relative fix-screen w-full h-full overflow-y-auto">
                     <div className="mt-2 relative">
                         <div className="w-full responsive rounded-md flex justify-center flex-row relative">
                             {
@@ -141,33 +170,35 @@ const Battle = () =>{
                     }
                     {
                         isShow &&(
-                            <div className="mt-2 absolute border-2 p-2 border-slate-300 shadow-sm bg-slate-100 rounded-lg top-[14%] z-50 left-1/2 transform -translate-x-1/2 w-[95%] flex flex-col gap-2">
-                                {pets.length > 0&&pets.map((pet:any,idx:number)=>(
-                                    <div key={idx} onClick={()=>handlSelectPet(idx)} className="w-full bg-[#a9c6e4] px-1 py-2 cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75 rounded-lg flex flex-row justify-between items-center text-black">
-                                        <div className="flex flex-row items-center gap-2">
-                                            <img className="-mt-2" width={62} src={`/assets/animation/${pet.category}/${pet.pet_evolution_phase}.gif`} alt="pet" />
-                                            <div className="flex flex-col">
-                                                <p className="text-sm">{pet.name}</p>
-                                                <div className="flex flex-row gap-3">
-                                                    <div className="flex flex-col">
-                                                        <small>ATK: 100</small>
-                                                        <small>DEF: 100</small>
-                                                    </div>
-                                                    <div className="flex flex-col">
-                                                        <small>Status: {pet.status}</small>
-                                                        <small>Score: {pet.score}</small>
+                            <div className="mt-2 h-[300px] absolute overflow-hidden border-2 p-2 border-slate-300 shadow-sm bg-slate-100 rounded-lg top-[14%] z-50 left-1/2 transform -translate-x-1/2 w-[95%] flex flex-col gap-2">
+                                <div className="overflow-y-auto gap-2 flex flex-col">
+                                    {pets.length > 0&&pets.map((pet:any,idx:number)=>(
+                                        <div key={idx} onClick={()=>handlSelectPet(idx)} className="w-full bg-[#a9c6e4] px-1 py-2 cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75 rounded-lg flex flex-row justify-between items-center text-black">
+                                            <div className="flex flex-row items-center gap-2">
+                                                <img className="-mt-2" width={62} src={`/assets/animation/${pet.category}/${pet.pet_evolution_phase}.gif`} alt="pet" />
+                                                <div className="flex flex-col">
+                                                    <p className="text-sm">{pet.name}</p>
+                                                    <div className="flex flex-row gap-3">
+                                                        <div className="flex flex-col">
+                                                            <small>ATK: 100</small>
+                                                            <small>DEF: 100</small>
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <small>Status: {pet.status}</small>
+                                                            <small>Score: {pet.score}</small>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         )
                     }
-                    <div className="mt-2 bg-[#a9c6e4] w-full px-3 rounded-lg text-black h-14">
+                    {/* <div className="mt-2 bg-[#a9c6e4] w-full px-3 rounded-lg text-black h-14">
                         <small>Attack Infomation</small>
-                    </div>
+                    </div> */}
                     <div className="mt-2 border-2 border-gray-300 flex flex-row justify-center gap-5 w-full px-2 py-3 rounded-lg text-black">
                         <button onClick={onAttack}>
                             {
@@ -181,9 +212,9 @@ const Battle = () =>{
                     </div>
                     <div className="clear"/>
                 </div>
-                
+                <Footer/>
             </div>
-            <Footer/>
+            
         </div>
         :<Layout/>
     )

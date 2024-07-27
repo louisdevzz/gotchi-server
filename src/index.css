@@ -21,19 +21,7 @@ button,a{
     font-family: "Silkscreen", sans-serif;
 }
 
-.scrollbar::-webkit-scrollbar {
-  width: 20px;
-}
 
-.scrollbar::-webkit-scrollbar-track { 
-  background: #fff;
-  border-radius: 25px;
-}
-
-.scrollbar::-webkit-scrollbar-thumb { 
-  background:#000;
-  border-radius: 25px;
-}
 
 .layout{
   height: 80vh;

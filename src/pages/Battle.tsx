@@ -3,10 +3,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import axios from "axios";
 import BattleLayout from "@/components/BattleLayout";
+import { initHere, viewFunction } from "@/hooks/hereWallet";
 
 const Battle = () =>{
-    
-    const [petLists, setPetLists] = useState<any>([]);
+    const [account, setAccount] = useState<string|null>(localStorage.getItem("accountID")||null);
+    const [petLists, setPetLists] = useState<any>(JSON.stringify(localStorage.getItem("list_pet"))||[]);
     const [listOponent, setListOponent] = useState<any>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [currentIndexPet, setCurrentIndexPet] = useState<number>(0||Number(localStorage.getItem("indexPet")));
@@ -14,14 +15,45 @@ const Battle = () =>{
     const [isAttack, setIsAttack] = useState<boolean>(false)
 
     useEffect(()=>{
-        FetchPet()
         FetchOponent()
-    },[])
-    const FetchPet = async() =>{
-        const pets = await axios.get("https://joygotchi.vercel.app/api/list_pet");
-        //console.log("listpet",pets.data)
-        setPetLists(pets.data)
+        loadAccount()
+        if(account){
+            FetchPet()
+        }
+    },[account])
+
+    const loadAccount = async() =>{
+        try{
+            const here = await initHere();
+            if(!here) return;
+            if(await here.isSignedIn()) {
+                const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
+                if (accounts.length > 0) {
+                    setAccount(accounts[0]);
+                }
+            }
+        }
+        catch (error){
+            console.error(error);
+            throw error;
+        }
     }
+
+    const FetchPet = async() =>{
+        const res = await viewFunction(
+            "get_all_pet_metadata",
+            {}
+        )
+        if(res){
+            const pets = res.filter((pet:any) => pet.owner_id == account )
+            console.log("pet",pets)
+            setPetLists(pets)
+            localStorage.setItem("namePet",pets[0].name)
+            localStorage.setItem("seconds",JSON.stringify(pets[0].time_until_starving/10000000))
+            localStorage.setItem('list_pet',JSON.stringify(pets))
+        }
+    }
+
     const FetchOponent = async() =>{
         const oponents = await axios.get("https://joygotchi.vercel.app/api/list_pet_battle");
         //console.log("listpet",pets.data)

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { HereWallet } from "@here-wallet/core";
-import ImageSlider from "../components/ImageSlider";
-import CountDownTimer from "../components/CountDownTimer";
-import Footer from "../components/Footer";
-import axios from "axios";
+import ImageSlider from "@/components/ImageSlider";
+import CountDownTimer from "@/components/CountDownTimer";
+import Footer from "@/components/Footer";
 import { utils } from "near-api-js";
-import Tabs from "../components/Tabs";
-import { initHere,signIn } from "@/hooks/hereWallet";
+import Tabs from "@/components/Tabs";
+import { initHere,signIn, viewFunction } from "@/hooks/hereWallet";
 import { Link } from "react-router-dom";
 import MintNFT from "@/components/MintNFT";
 import Header from "@/components/Header";
@@ -14,7 +13,8 @@ import Header from "@/components/Header";
 
 const Home = () =>{
     const [namePet,setNamePet] = useState<string>("DRAGON GREEN");
-    const [petLists, setPetLists] = useState<any>([]);
+    const [petLists, setPetLists] = useState<any|null>(JSON.parse(localStorage.getItem('list_pet') as string)||[]);
+    const [itemsList, setItemsList] = useState<any>([])
     const [index, setIndex] = useState<number>(0);
     const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
     const [account,setAccount] = useState<string|null>(null);
@@ -23,35 +23,35 @@ const Home = () =>{
     const seconds = Number(localStorage.getItem("seconds"))??0;
 
 
-    let here: HereWallet;
-
     useEffect(()=>{
+        loadHere()
         localStorage.setItem("linkIndex",'0')
-        FetchPet();
         loadAccount()
-    },[account])
+        FetchPet();
+        FetchItem()
+    },[petLists,account])
 
-
+    const loadHere = async() =>{
+        await initHere()
+    }
+    petLists
     const loadAccount = async() =>{
-        try{
-            here = await initHere();
-            if(!here) return;
-            if(await here.isSignedIn()) {
-                const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
-                if (accounts.length > 0) {
-                    setAccount(accounts[0]);
-                }
+        const here = await initHere();
+        if(!here) return;
+        if(await here.isSignedIn()) {
+            const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
+            if (accounts.length > 0) {
+                setAccount(accounts[0]);
+                localStorage.setItem("accountID",accounts[0])
             }
-        }
-        catch (error){
-            console.error(error);
-            throw error;
         }
     }
 
 
     const instantSignin = async () => {
-        await signIn();
+        const accounts = await signIn();
+        setAccount(accounts[0]);
+        localStorage.setItem("accountID",accounts[0])
     };
 
     const truncateString = (str: string)=>{
@@ -69,41 +69,53 @@ const Home = () =>{
     }
 
     const FetchPet = async() =>{
-        const pets = await axios.get(import.meta.env.VITE_API_GET_LIST_PET);
-        //console.log("pet",pets.data)
-        // setPetLists(pets.data)
-        localStorage.setItem("namePet",pets.data[0].name)
-        localStorage.setItem("seconds",JSON.stringify(pets.data[0].time_until_starving/10000000))
+        const res = await viewFunction(
+            "get_all_pet_metadata",
+            {}
+        )
+        if(res){
+            const pets = res.filter((pet:any) => pet.owner_id == account )
+            //console.log("pet",pets)
+            setPetLists(pets)
+            localStorage.setItem("namePet",pets[0].name)
+            localStorage.setItem("seconds",JSON.stringify(pets[0].time_until_starving/10000000))
+            localStorage.setItem('list_pet',JSON.stringify(pets))
+        }
     }
 
-    // const onBuyAccessory = async(itemId:any) =>{
-    //     const tx = hereWallet.signAndSendTransaction({
-    //     receiverId: "game1.joychi.testnet",
-    //     actions: [
-    //         {
-    //         type: "FunctionCall",
-    //         params: {
-    //         methodName: "buy_item",
-    //         args: {"pet_id": petLists[index].pet_id, "item_id": itemId },
-    //         gas: BOATLOAD_OF_GAS,
-    //         deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
-    //         },
-    //         },
-    //     ],
-    //     })
-    //     console.log("tx",tx)
-    // }
+
+    const FetchItem = async()=>{
+        const res = await viewFunction(
+            "get_all_item_metadata",
+            {}
+        )
+        if(res){
+            const items = res
+            //console.log("items",items)
+            setItemsList(items)
+            localStorage.setItem('list_items',JSON.stringify(items))
+        }
+    }
+
+ 
     //console.log(account)
 
 return(
     <>
     <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
-        <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg md h-full relative">
+        <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg md h-screen relative">
             {
-                petLists.length == 0?(
-                    <Header/>
-                ):(
-                    <div className="w-full h-full sticky top-0 z-20">
+                !account&&(
+                    <div className="h-screen w-full flex flex-row justify-center items-center">
+                        <button onClick={instantSignin} className="w-2/4 h-12 px-3 py-2 bg-[#304053] rounded-lg">
+                            <span className="text-white">Connect Wallet</span>
+                        </button>
+                    </div>
+                )
+            }
+            {account&&
+                (petLists.length > 0?(
+                    <div className="w-full sticky top-0 z-20">
                         {status&&(
                                 <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
                                     <div className="flex flex-row w-full px-3 items-center h-full gap-2">
@@ -171,16 +183,13 @@ return(
                             </div>
                         </div>
                     </div>
-                )
-            }
-            {
-                petLists.length == 0?(
-                    <div className="mt-5 mb-10 w-full px-2">
-                        <MintNFT/>
-                        <div className="clean"/>
-                    </div>
                 ):(
-                    <div className="h-full w-full flex flex-col flex-1 relative">
+                    <Header/>
+                )
+            )}
+            {account&&(
+                petLists.length > 0?(
+                    <div className="h-full bg-[#e5f2f8] w-full flex flex-col flex-1 relative">
                         <div className="p-3 h-full flex flex-col relative w-full">
                             <div className="flex flex-col">
                             <div className="mt-2 h-full">
@@ -190,7 +199,7 @@ return(
                                         {/* <img width={10} height={10} className="w-6 h-6 absolute top-1/2 left-[70px] " src="/assets/icon/arrow_left.png" alt="arrow" /> */}
                                         {/* <img width={150} className="absolute top-1/2 left-[53%] transform -translate-x-1/2 -translate-y-1/2" src="/assets/pet/pet.png" alt="pet" /> */}
                                         <div className="absolute top-[40%] left-[50%] transform -translate-x-1/2 -translate-y-1/2">
-                                        <ImageSlider petList={petLists} changeName={setNamePet} setIndex={setIndex}/>
+                                            <ImageSlider petList={petLists} changeName={setNamePet} setIndex={setIndex}/>
                                         </div>
                                         {/* <img width={10} height={10} className="w-6 h-6 absolute top-1/2 right-[60px] " src="/assets/icon/arrow_right.png" alt="arrow" /> */}
                                     </div>
@@ -215,13 +224,22 @@ return(
                                     <span className="text-[#00000088]">STAR</span>
                                 </div>
                             </div>
-                            <Tabs/>
+                            <Tabs petLists={petLists} index={index} setStatus={setStatus}/>
                             </div>
                         </div>
                     </div>
+                ):(
+                    <div className="mt-5 mb-10 w-full px-2">
+                        <MintNFT/>
+                        <div className="clean"/>
+                    </div>
+                )
+            )}
+            {
+                account&&(
+                    <Footer/>
                 )
             }
-            <Footer/>
         </div>
     </div>
     </>

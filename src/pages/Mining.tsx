@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CountDownTimer from "@/components/CountDownTimer";
-import { initHere } from "@/hooks/hereWallet";
+import { callFunctionFT, initHere } from "@/hooks/hereWallet";
 import { utils } from "near-api-js";
+import { HereWallet } from "@here-wallet/core";
 
 const Mining = () =>{
     const [account, setAccount] = useState<string|null>(null)
@@ -15,14 +16,11 @@ const Mining = () =>{
     const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
 
     useEffect(()=>{
+        loadAccount()
         if(Math.floor((Date.now()-oldSeconds)/1000)>60){
             setDisable(false)
             localStorage.removeItem("isDisable")
         }
-    },[])
-
-    useEffect(()=>{
-        loadAccount()
     },[account])
 
     const loadAccount = async() =>{
@@ -43,40 +41,27 @@ const Mining = () =>{
     }
 
     const onMining = () =>{
+        onClaim()
         setSeconds(60)
-        setStatus("Claim successfull!")
         setDisable(true)
         localStorage.setItem('isDisable','true')
         localStorage.setItem("timeClaim",Date.now().toString())
-        setTimeout(() => {
-            setStatus(null)
-        }, 1000);
     }
 
-    const onFaucet = async() => {
-        const here = await initHere();
-        const tx = await here.signAndSendTransaction({
-            signerId: account as string,
-            receiverId: "faucet.joychi.testnet",
-            actions: [
-              {
-                type: "FunctionCall",
-                params: {
-                  methodName: "get_joychi",
-                  args: {addr_to:account},
-                  gas: BOATLOAD_OF_GAS,
-                  deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
-                },
-              },
-            ],
-        })
-        console.log("tx",tx)
+    const onClaim = async() => {
+        try{
+            setStatus("Loading...")
+            await callFunctionFT('get_joychi', {addr_to:account});
+        }catch(err){
+            console.error(err)
+            localStorage.setItem("error",err as string)
+        }
     } 
 
-    //console.log("second",seconds)
+    //console.log("second",account)
     return(
         <div className={`flex flex-col justify-center items-center w-full h-full bg-[#b8e3f8]`}>
-            <div className="bg-[#e5f2f8] screen h-full">
+            <div className="bg-[#e5f2f8] screen h-screen">
                 <Header/>
                 {status&&(
                     <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
@@ -87,7 +72,7 @@ const Mining = () =>{
                     </div>
                 )}
                 <div className="h-full">
-                    <div className="mt-8 px-2">
+                    <div className="mt-2 px-2">
                         <div className="border-2 border-[#304053] shadow-sm w-full h-60 rounded-lg relative">
                             <img width={70} className="w-full h-60 rounded-lg" src="https://giffiles.alphacoders.com/212/212460.gif" alt="gif" />
                             <button disabled={isDisable} onClick={onMining} className="text-white flex justify-center items-center flex-row gap-2 font-semibold bg-[#2d3c53] border boder-white absolute bottom-2 w-2/4 py-3 rounded-lg left-1/2 transform -translate-x-1/2">

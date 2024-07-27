@@ -12,6 +12,7 @@ const MintNFT = () =>{
     const [DEF, setDEF] = useState<string|null>("100")
     const [image, setImage] = useState<string|null>("/assets/animation/greendragon/1.gif")
     const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
+    const [status, setStatus] = useState<string|null>(null);
 
     useEffect(()=>{
         loadAccount()
@@ -49,35 +50,54 @@ const MintNFT = () =>{
     }
 
     const onMintDragon = async() => {
-        const here = await initHere();
-        const tx = await here.signAndSendTransaction({
-			signerId: account as string,
-			receiverId: import.meta.env.VITE_CONTRACT_GAME,
-			actions: [
-			  {
-				type: "FunctionCall",
-				params: {
-				  methodName: "create_pet",
-				  args: {
-					"name": "Dragon Green",
-					"metadata": {
-					  "title": "Dragon Green",
-					  "description": "Power of dragon",
-					  "media": "https://bafkreidmie2fie6k4x3dfrht5sq2wutgxxdsgkgouvyppesd3wvgqidpgm.ipfs.nftstorage.link/"
-					}
-				  },
-				  gas: BOATLOAD_OF_GAS,
-				  deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
-				},
-			  },
-			],
-		})
-        console.log("succesfull",tx)
+        try{
+            const here = await HereWallet.connect();
+            setStatus("Loading...")
+            const tx = await here.silentSignAndSendTransaction({
+                signerId: account as string,
+                receiverId: import.meta.env.VITE_CONTRACT_GAME,
+                actions: [
+                {
+                    type: "FunctionCall",
+                    params: {
+                    methodName: "create_pet",
+                    args: {
+                        "name": "PET",
+                        "metadata": {
+                        "title": "Dragon Green",
+                        "description": "Power of dragon",
+                        "media": "https://bafkreidmie2fie6k4x3dfrht5sq2wutgxxdsgkgouvyppesd3wvgqidpgm.ipfs.nftstorage.link/"
+                        }
+                    },
+                    gas: BOATLOAD_OF_GAS,
+                    deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
+                    },
+                },
+                ],
+            })
+            setStatus("Mint Successful!")
+            setTimeout(()=>{
+                setStatus(null)
+            },1000)
+            console.log("succesfull",tx)
+            localStorage.setItem("tx",tx.transaction)
+        }catch(error){
+            localStorage.setItem("err",error as string)
+            console.log(error)
+        }
 	} 
 
 
     return(
         <>
+            {status&&(
+                <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                    <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                        <img width={22} src="/assets/icon/success.svg" alt="success" />
+                        <small className="text-[#2d3c53] text-sm font-semibold">{status}</small>
+                    </div>
+                </div>
+            )}
             <div className="border-2 border-[#304053] shadow-sm w-full h-44 rounded-lg">
                 <div className="py-1 w-full rounded-t-md bg-[#304053] text-center">
                     <span className="text-xl">NFT PET</span>
@@ -132,7 +152,7 @@ const MintNFT = () =>{
                     <span className="text-black">MINT 1 pet </span>
                     <span className="text-black">cost 2 token</span>
                 </div>
-                <button className="w-44 h-12 px-3 py-2 bg-[#304053] rounded-lg">
+                <button onClick={onMintDragon} className="w-44 h-12 px-3 py-2 bg-[#304053] rounded-lg">
                     <span className="font-semibold">MINT</span>
                 </button>
             </div>

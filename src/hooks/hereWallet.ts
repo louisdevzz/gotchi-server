@@ -1,11 +1,11 @@
 import { HereWallet, HereKeyStore, HereAuthStorage, TelegramAppStrategy, HereInitializeOptions } from "@here-wallet/core";
 import { utils } from 'near-api-js';
 
-export const CONTRACT_ID = "social.near";
-export const CONTRACT_ID_FT = "blackdragon.tkn.near";
+export const CONTRACT_ID = "game.joyv1.near";
+export const CONTRACT_ID_FT = "faucet.joyv1.near";
 
 let wallet: HereWallet;
-let hereAuthStorage: HereAuthStorage;
+export let hereAuthStorage: HereAuthStorage;
 
 
 
@@ -21,11 +21,14 @@ export const initHere = async(): Promise<HereWallet> => {
 }
 
 export const signIn = async () : Promise<any> => {
-  await wallet.signIn({ contractId: CONTRACT_ID });
+  const accounts = await wallet.signIn({ contractId: CONTRACT_ID });
+  return accounts;
 }
 
 export const signOut = async() => {
   await wallet.signOut();
+  localStorage.removeItem("accountID")
+  localStorage.removeItem("list_pet")
 }
 
 export const getAccounts = async (): Promise<string[]> => { 
@@ -67,7 +70,7 @@ export const viewFunctionFT = async (functionName: string, args = {}): Promise<a
   }
 }
 
-export const callFunction = async (functionName: string, args = {}, deposit = '0', gas = '300000000000000'): Promise<any> => {
+export const callFunction = async (functionName: string, args = {}, deposit = '0'): Promise<any> => {
   try{
     if(!wallet) return null;
     const accountId = await wallet.getAccountId();
@@ -92,7 +95,32 @@ export const callFunction = async (functionName: string, args = {}, deposit = '0
   }
 }
 
-export const callFunctionFT = async (functionName: string, args = {}, deposit = '0', gas = '300000000000000'): Promise<any> => {
+export const callFunctionST = async (functionName: string, args = {}, deposit = '0'): Promise<any> => {
+  try{
+    if(!wallet) return null;
+    const accountId = await wallet.getAccountId();
+    const accountInstance = await wallet.account(accountId);
+    const result = await wallet.silentSignAndSendTransaction({
+      signerId: accountId,
+      receiverId: CONTRACT_ID,
+      actions: [{
+        type: 'FunctionCall',
+        params: {
+          methodName: functionName,
+          args,
+          gas: '30000000000000',
+          deposit: utils.format.parseNearAmount(deposit) ?? '0',
+        },
+      }],
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export const callFunctionFT = async (functionName: string, args = {}, deposit = '0'): Promise<any> => {
   try{
     if(!wallet) return null;
     const accountId = await wallet.getAccountId();

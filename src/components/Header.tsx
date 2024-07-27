@@ -4,15 +4,20 @@ import { initHere,signOut,signIn } from "@/hooks/hereWallet";
 import { Link } from "react-router-dom";
 
 const Header = () =>{
-    const [account,setAccount] = useState<string|null>(null);
+    const [account,setAccount] = useState<string|null>(localStorage.getItem("accountID")||null);
     const [isShow, setIsShow] = useState<boolean>(false);
     const [status, setStatus] = useState<string|null>(null);
     const namePet = localStorage.getItem("namePet")??"-";
     let here: HereWallet;
 
     useEffect(()=>{
+        loadHere()
         loadAccount()
-    },[])
+    },[account])
+
+    const loadHere = async() =>{
+        await initHere()
+    }
 
     const loadAccount = async() =>{
         try{
@@ -22,6 +27,7 @@ const Header = () =>{
                 const accounts = await here.getAccounts(); // Ensure accounts are fetched correctly
                 if (accounts.length > 0) {
                     setAccount(accounts[0]);
+                    localStorage.setItem("accountID",accounts[0])
                 }
             }
         }
@@ -33,7 +39,9 @@ const Header = () =>{
     
 
     const instantSignin = async () => {
-        await signIn();
+        const accounts = await signIn();
+        setAccount(accounts[0]);
+        localStorage.setItem("accountID",accounts[0])
     };
 
     const truncateString = (str: string)=>{

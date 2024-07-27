@@ -23,8 +23,10 @@ button,a{
 
 .screen{
   width: 100%;
+  height: 100%;
   @media screen and (min-width:560px) {
       width: 400px;
+      height: 100%;
   }
 }
 
@@ -163,5 +165,12 @@ button,a{
   height: 90px;
   @media screen and (min-width: 560px) {
     height: 0;
+  }
+}
+
+.clean-screen{
+  height: 77vh;
+  @media screen and (min-width: 560px) {
+    height: 72.8vh;
   }
 }

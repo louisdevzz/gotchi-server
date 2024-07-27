@@ -1,41 +1,44 @@
-import { useEffect, useState } from "react";
-import { HereWallet } from "@here-wallet/core";
+import { useEffect, useState,useCallback } from "react";
 import ImageSlider from "@/components/ImageSlider";
 import CountDownTimer from "@/components/CountDownTimer";
 import Footer from "@/components/Footer";
 import { utils } from "near-api-js";
 import Tabs from "@/components/Tabs";
-import { initHere,signIn, viewFunction } from "@/hooks/hereWallet";
+import { callFunctionST, initHere,signIn, viewFunction } from "@/hooks/hereWallet";
 import { Link } from "react-router-dom";
 import MintNFT from "@/components/MintNFT";
 import Header from "@/components/Header";
-
+import Loading from "@/components/Loading";
+import Layout from "@/components/Layout";
+import { HereWallet } from "@here-wallet/core";
+import WebApp from "@twa-dev/sdk";
 
 const Home = () =>{
-    const [namePet,setNamePet] = useState<string>("DRAGON GREEN");
-    const [petLists, setPetLists] = useState<any|null>(JSON.parse(localStorage.getItem('list_pet') as string)||[]);
-    const [itemsList, setItemsList] = useState<any>([])
+    const [loading, setLoading] = useState<boolean>(false);
+    const [namePet,setNamePet] = useState<string|null>(null);
+    const [petLists, setPetLists] = useState<any|null>([]);
     const [index, setIndex] = useState<number>(0);
-    const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
     const [account,setAccount] = useState<string|null>(null);
     const [isShow, setIsShow] = useState<boolean>(false);
     const [status, setStatus] = useState<string|null>(null);
     const seconds = Number(localStorage.getItem("seconds"))??0;
+    const [isSign, setIsSign] = useState<boolean>(false);
 
 
     useEffect(()=>{
         loadHere()
         localStorage.setItem("linkIndex",'0')
         loadAccount()
-        FetchPet();
-        FetchItem()
-    },[petLists,account])
+        if(account){
+            FetchPet()
+            if(petLists.length > 0){
+                setLoading(false)
+            }
+        }
+    },[account])
 
-    const loadHere = async() =>{
-        await initHere()
-    }
-    petLists
     const loadAccount = async() =>{
+        setLoading(true)
         const here = await initHere();
         if(!here) return;
         if(await here.isSignedIn()) {
@@ -43,9 +46,44 @@ const Home = () =>{
             if (accounts.length > 0) {
                 setAccount(accounts[0]);
                 localStorage.setItem("accountID",accounts[0])
+                
+            }
+        }else{
+            setLoading(false)
+        }
+    }
+
+    const loadHere = async() =>{
+        const here  = await initHere();
+        setIsSign(await here.isSignedIn())
+    }
+
+    useEffect(()=>{
+        if(localStorage.getItem("namePet")){
+            setNamePet(localStorage.getItem("namePet"))
+        }
+    },[])
+
+    const FetchPet = async() =>{
+        const res = await viewFunction(
+            "get_all_pet_metadata",
+            {}
+        )
+        if(res){
+            localStorage.setItem("list_all_pet",JSON.stringify(res))
+            const pets = res.filter((pet:any) => pet.owner_id == account )
+            //console.log("pet",pets)
+            setPetLists(pets)
+            if(pets.length > 0){
+                setNamePet(pets[0].name)
+                setLoading(false)
+                localStorage.setItem("namePet",pets[0].name)
+                localStorage.setItem("seconds",JSON.stringify(pets[0].time_until_starving/10000000))
+                //localStorage.setItem('list_pet',JSON.stringify(pets))
             }
         }
     }
+
 
 
     const instantSignin = async () => {
@@ -60,62 +98,32 @@ const Home = () =>{
         return format+".tg"
     }
     
-    const onChangeName = () =>{
-        setStatus("CHANGE SUCCSEFFULL!")
-        setTimeout(function(){
-            setStatus(null)
-        },1200)
-        setIsShow(false)
-    }
-
-    const FetchPet = async() =>{
-        const res = await viewFunction(
-            "get_all_pet_metadata",
-            {}
-        )
-        if(res){
-            const pets = res.filter((pet:any) => pet.owner_id == account )
-            //console.log("pet",pets)
-            setPetLists(pets)
-            localStorage.setItem("namePet",pets[0].name)
-            localStorage.setItem("seconds",JSON.stringify(pets[0].time_until_starving/10000000))
-            localStorage.setItem('list_pet',JSON.stringify(pets))
+    const onChangeName = async() =>{
+        try{
+            setStatus("Loading....")
+            await callFunctionST("change_name_pet",{"pet_id": petLists[index].pet_id, "name": namePet });
+            setStatus("CHANGE SUCCSEFFULL!")
+            setTimeout(function(){
+                setStatus(null)
+            },1200)
+            setIsShow(false)
+        }catch(err){
+            console.log(err)
         }
+        
     }
 
 
-    const FetchItem = async()=>{
-        const res = await viewFunction(
-            "get_all_item_metadata",
-            {}
-        )
-        if(res){
-            const items = res
-            //console.log("items",items)
-            setItemsList(items)
-            localStorage.setItem('list_items',JSON.stringify(items))
-        }
-    }
-
- 
-    //console.log(account)
+    // console.log(petLists)
+    // console.log(loading)
 
 return(
+    !loading?
     <>
-    <div className={`flex flex-col justify-center items-center w-full min-h-screen bg-[#b8e3f8]`}>
-        <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg md h-screen relative">
-            {
-                !account&&(
-                    <div className="h-screen w-full flex flex-row justify-center items-center">
-                        <button onClick={instantSignin} className="w-2/4 h-12 px-3 py-2 bg-[#304053] rounded-lg">
-                            <span className="text-white">Connect Wallet</span>
-                        </button>
-                    </div>
-                )
-            }
-            {account&&
-                (petLists.length > 0?(
-                    <div className="w-full sticky top-0 z-20">
+    <div className={`flex flex-col justify-center items-center w-full h-screen bg-[#b8e3f8]`}>
+    {!loading&&isSign&&
+                (petLists&&petLists.length > 0?(
+                    <div className="w-full fix-header sticky top-0 z-20">
                         {status&&(
                                 <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
                                     <div className="flex flex-row w-full px-3 items-center h-full gap-2">
@@ -136,7 +144,7 @@ return(
                                         </div>
                                         <div className="px-3 mt-5 flex flex-col gap-1 text-black">
                                             <label htmlFor="name">Name Pet</label>
-                                            <input type="text" placeholder="Enter new name" className="px-3 py-2 border-2 outline-none rounded-lg border-gray-300 focus:border-[#2d3c53] hover:border-[#2d3c53]" />
+                                            <input onChange={(e)=>setNamePet(e.target.value)} type="text" placeholder="Enter new name" className="px-3 py-2 border-2 outline-none rounded-lg border-gray-300 focus:border-[#2d3c53] hover:border-[#2d3c53]" />
                                         </div>
                                         <div className="flex justify-end px-3 mt-7">
                                             <button onClick={onChangeName} className="px3 py-2 w-32 rounded-lg h-12 bg-[#2d3c53] hover:bg-opacity-90">
@@ -187,9 +195,21 @@ return(
                     <Header/>
                 )
             )}
-            {account&&(
-                petLists.length > 0?(
-                    <div className="h-full bg-[#e5f2f8] w-full flex flex-col flex-1 relative">
+        <div className="bg-[#e5f2f8] screen h-full w-full md:w-[400px] md:rounded-lg relative overflow-y-auto">
+            {!loading&&(
+                !isSign&&(
+                    <div className="h-screen w-full flex flex-row justify-center items-center">
+                        <button onClick={instantSignin} className="w-2/4 h-12 px-3 py-2 bg-[#304053] rounded-lg">
+                            <span className="text-white">Connect Wallet</span>
+                        </button>
+                    </div>
+                )
+                )
+            }
+            
+            {!loading&&isSign&&(
+                petLists&&petLists.length > 0?(
+                    <div className="h-full bg-[#e5f2f8] w-full flex flex-col flex-1 relative ">
                         <div className="p-3 h-full flex flex-col relative w-full">
                             <div className="flex flex-col">
                             <div className="mt-2 h-full">
@@ -235,15 +255,16 @@ return(
                     </div>
                 )
             )}
-            {
+            
+        </div>
+        {
                 account&&(
                     <Footer/>
                 )
             }
-        </div>
     </div>
     </>
-    
+    :<Layout/>
   )
 }
 

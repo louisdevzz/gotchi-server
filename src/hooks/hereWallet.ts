@@ -13,7 +13,7 @@ export const initHere = async(): Promise<HereWallet> => {
   if (!hereAuthStorage) hereAuthStorage = new HereKeyStore();
   const here = await HereWallet.connect({
     authStorage: hereAuthStorage,
-    botId: "dropjson_bot/dropjson", // Your bot MiniApp
+    botId: "joydragon_bot/games", // Your bot MiniApp
     walletId: "herewalletbot/app" //Hot wallet
   });
   wallet = here;

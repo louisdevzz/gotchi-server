@@ -1,38 +1,45 @@
-import Home from "@/pages/Home"
 import { useRoutes } from "react-router-dom";
-import Battle from "./pages/Battle";
-import Mission from "./pages/Mission";
-import Space from "./pages/Space";
-import Mining from "./pages/Mining";
-import Mint from "./pages/Mint";
+import React from "react";
+import Layout from "./components/Layout";
+
+const HomeLazy = React.lazy(()=>import("@/pages/Home"))
+const MiningLazy = React.lazy(()=>import("@/pages/Mining"))
+const BattleLazy = React.lazy(()=>import("@/pages/Battle"))
+const MissionLazy = React.lazy(()=>import("@/pages/Mission"))
+const SpaceLazy = React.lazy(()=>import("@/pages/Space"))
+const MintLazy = React.lazy(()=>import("@/pages/Mint"))
 
 const App = () =>{
-    return useRoutes([
+    return <React.Suspense fallback={<Layout/>}>
       {
-        path: "/",
-        element: <Home/>
-      },
-      {
-        path: 'mining',
-        element: <Mining/>
-      },
-      {
-        path: "battle",
-        element: <Battle/>
-      },
-      {
-        path: "mission",
-        element: <Mission/>
-      },
-      {
-        path: "space",
-        element: <Space/>
-      },
-      {
-        path: "mint",
-        element: <Mint/>
+        useRoutes([
+          {
+            path: "/",
+            element: <HomeLazy/>
+          },
+          {
+            path: 'mining',
+            element: <MiningLazy/>
+          },
+          {
+            path: "battle",
+            element: <BattleLazy/>
+          },
+          {
+            path: "mission",
+            element: <MissionLazy/>
+          },
+          {
+            path: "space",
+            element: <SpaceLazy/>
+          },
+          {
+            path: "mint",
+            element: <MintLazy/>
+          }
+        ])
       }
-    ])
+    </React.Suspense>
 }
 
 export default App;   

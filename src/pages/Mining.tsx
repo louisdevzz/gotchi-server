@@ -71,7 +71,7 @@ const Mining = () =>{
                         </div>
                     </div>
                 )}
-                <div className="h-full">
+                <div className="h-full fix-screen">
                     <div className="mt-2 px-2">
                         <div className="border-2 border-[#304053] shadow-sm w-full h-60 rounded-lg relative">
                             <img width={70} className="w-full h-60 rounded-lg" src="https://giffiles.alphacoders.com/212/212460.gif" alt="gif" />

@@ -23,7 +23,7 @@ const Home = () =>{
     const [status, setStatus] = useState<string|null>(null);
     const seconds = Number(localStorage.getItem("seconds"))??0;
     const [isSign, setIsSign] = useState<boolean>(false);
-
+    const [error, setError] = useState<string|null>(null)
 
     useEffect(()=>{
         loadHere()
@@ -109,6 +109,11 @@ const Home = () =>{
             setIsShow(false)
         }catch(err){
             console.log(err)
+            setError(err as string)
+            setTimeout(function(){
+                setError(null)
+            },1200)
+            
         }
         
     }
@@ -121,17 +126,25 @@ return(
     !loading?
     <>
     <div className={`flex flex-col justify-center items-center w-full h-screen bg-[#b8e3f8]`}>
+    {status&&(
+            <div className="fixed z-50 bg-[#d4edda] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#c3e6cb] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                    <img width={22} src="/assets/icon/success.svg" alt="success" />
+                    <small className="text-[#155724] text-sm font-semibold">{status}</small>
+                </div>
+            </div>
+        )}
+        {error&&(
+            <div className="fixed z-50 bg-[#f8d7da] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#FF0000] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                    <img width={22} src="/assets/icon/error.svg" alt="error" />
+                    <small className="text-[#FF0000] text-sm font-semibold">{error}</small>
+                </div>
+            </div>
+        )}
     {!loading&&isSign&&
                 (petLists&&petLists.length > 0?(
                     <div className="w-full fix-header sticky top-0 z-20">
-                        {status&&(
-                                <div className="fixed z-50 bg-[#97b5d5] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#e5f2f8] shadow-sm transform -translate-x-1/2 transition-all delay-75">
-                                    <div className="flex flex-row w-full px-3 items-center h-full gap-2">
-                                        <img width={22} src="/assets/icon/success.svg" alt="success" />
-                                        <small className="text-[#2d3c53] text-sm font-semibold">{status}</small>
-                                    </div>
-                                </div>
-                            )}
                         {
                             isShow&&(
                                 <div className="fixed h-screen w-full bg-black bg-opacity-45 z-40 overflow-hidden overscroll-none">
@@ -244,7 +257,7 @@ return(
                                     <span className="text-[#00000088]">STAR</span>
                                 </div>
                             </div>
-                            <Tabs petLists={petLists} index={index} setStatus={setStatus}/>
+                            <Tabs petLists={petLists} index={index} status={setStatus} error={setError}/>
                             </div>
                         </div>
                     </div>

@@ -39,8 +39,8 @@ const Swap = () =>{
                 </div>
             </div>
             <div className="flex flex-row justify-center w-full">
-                <button className="w-3/4 h-12 bg-[#2d3c53] hover:bg-opacity-80 px-3 py-2 rounded-lg">
-                    <span className="text-white font-semibold text-xl">SWAP</span>
+                <button disabled className="w-3/4 h-12 bg-[#2d3c53] hover:bg-opacity-80 px-3 py-2 rounded-lg">
+                    <span className="text-white font-semibold text-xl">Coming soon</span>
                 </button>
             </div>
             <div className="swap"/>

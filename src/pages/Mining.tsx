@@ -85,15 +85,15 @@ const Mining = () =>{
                             <small className="text-[#155724] text-sm font-semibold">{status}</small>
                         </div>
                     </div>
-            )}
-            {error&&(
-                <div className="fixed z-50 bg-[#f8d7da] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#FF0000] shadow-sm transform -translate-x-1/2 transition-all delay-75">
-                    <div className="flex flex-row w-full px-3 items-center h-full gap-2">
-                        <img width={22} src="/assets/icon/error.svg" alt="error" />
-                        <small className="text-[#FF0000] text-sm font-semibold">{error}</small>
+                )}
+                {error&&(
+                    <div className="fixed z-50 bg-[#f8d7da] w-60 h-10 top-5 left-[52%] rounded-lg border-2 border-[#FF0000] shadow-sm transform -translate-x-1/2 transition-all delay-75">
+                        <div className="flex flex-row w-full px-3 items-center h-full gap-2">
+                            <img width={22} src="/assets/icon/error.svg" alt="error" />
+                            <small className="text-[#FF0000] text-sm font-semibold">{error}</small>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
                 <div className="h-full fix-screen">
                     <div className="mt-2 px-2">
                         <div className="border-2 border-[#304053] shadow-sm w-full h-60 rounded-lg relative">

@@ -7,7 +7,7 @@ type Button = {
     width: number
 }
 
-const Tabs = ({petLists,index,setStatus}:{petLists:any,index:number,setStatus:any}) =>{
+const Tabs = ({petLists,index,status,error}:{petLists:any,index:number,status:any,error:any}) =>{
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const listButton = [
         {
@@ -34,30 +34,23 @@ const Tabs = ({petLists,index,setStatus}:{petLists:any,index:number,setStatus:an
 
     const onBuyAccessory = async(itemId:any) =>{
         try{
-            setStatus("Loading...")
-            const tx = await callFunctionST("buy_item",{"pet_id": petLists[index].pet_id, "item_id": itemId });
-            setStatus("Buy successfull!")
+            status("Loading...")
+            await callFunctionST("buy_item",{"pet_id": petLists[index].pet_id, "item_id": itemId });
+            status("Buy successfull!")
             setTimeout(() => {
-                setStatus(null)
+                status(null)
             }, 1000);
-            console.log("tx",tx)
         }catch(err){
             console.log(err)
+            error(error)
+            setTimeout(() => {
+                error(null)
+            }, 1000);
         }
-        // const tx = hereWallet.signAndSendTransaction({
-        // receiverId: "game1.joychi.testnet",
-        // actions: [
-        //     {
-        //     type: "FunctionCall",
-        //     params: {
-        //     methodName: "buy_item",
-        //     args: {"pet_id": petLists[index].pet_id, "item_id": itemId },
-        //     gas: BOATLOAD_OF_GAS,
-        //     deposit: utils.format.parseNearAmount("0")!,//30000000000000000000000
-        //     },
-        //     },
-        // ],
-        // })
+    }
+
+    const checkIsAlive = async()=>{
+        await callFunctionST("is_pet_alive",{"pet_id": 6 });
     }
     
     return(

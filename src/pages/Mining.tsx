@@ -123,7 +123,7 @@ const Mining = () =>{
                                     <small className="text-[0.75rem]">Tool</small>
                                 </div>
                                 <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/tools/2.png" alt="hamor" />
+                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                 </div>
                                 <div className="mt-5 flex flex-col gap-1 px-2">
                                     <div className="flex flex-row gap-4">
@@ -141,7 +141,7 @@ const Mining = () =>{
                                     <small className="text-[0.75rem]">Tool</small>
                                 </div>
                                 <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/tools/3.png" alt="hamor" />
+                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                 </div>
                                 <div className="mt-5 flex flex-col gap-1 px-2">
                                     <div className="flex flex-row gap-4">
@@ -159,7 +159,7 @@ const Mining = () =>{
                                     <small className="text-[0.75rem]">Tool</small>
                                 </div>
                                 <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/tools/4.png" alt="hoe" />
+                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                 </div>
                                 <div className="mt-5 flex flex-col gap-1 px-2">
                                     <div className="flex flex-row gap-4">
@@ -201,7 +201,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/1.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">
@@ -220,7 +220,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/2.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">
@@ -238,7 +238,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/3.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">
@@ -256,7 +256,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/4.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">
@@ -274,7 +274,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/5.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">
@@ -292,7 +292,7 @@ const Mining = () =>{
                                         <small className="text-[0.75rem]">Tool</small>
                                     </div>
                                     <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/tools/6.png" alt="hoe" />
+                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
                                     </div>
                                     <div className="mt-5 flex flex-col gap-1 px-2">
                                         <div className="flex flex-row gap-4">

@@ -10,9 +10,10 @@ const MintNFT = () =>{
     const [namePet, setNamePet] = useState<string|null>("GREEN DRAGON")
     const [ATK, setATK] = useState<string|null>("100")
     const [DEF, setDEF] = useState<string|null>("100")
-    const [image, setImage] = useState<string|null>("/assets/animation/greendragon/1.gif")
+    const [image, setImage] = useState<string|null>("/assets/animation/blackdragon/1.gif")
     const BOATLOAD_OF_GAS = utils.format.parseNearAmount("0.00000000003")!;
     const [status, setStatus] = useState<string|null>(null);
+    const [currentIndex, setCurrentIndex] = useState<number>(0)
 
     useEffect(()=>{
         loadAccount()
@@ -40,6 +41,7 @@ const MintNFT = () =>{
         setATK("100")
         setDEF("100")
         setImage("/assets/animation/blackdragon/1.gif")
+        setCurrentIndex(0)
     }
 
     const onMintGreenDragon =() =>{
@@ -47,6 +49,7 @@ const MintNFT = () =>{
         setATK("100")
         setDEF("100")
         setImage("/assets/animation/greendragon/1.gif")
+        setCurrentIndex(1)
     }
 
     const onMintDragon = async() => {
@@ -128,13 +131,13 @@ const MintNFT = () =>{
                 </div>
             </div>
             <div className="flex flex-row justify-start gap-5 items-center mt-2">
-                <div onClick={onMintBlackDragon} className="h-28 cursor-pointer w-28 border-2 rounded-lg mt-2 border-[#304053] relative">
+                <div onClick={onMintBlackDragon} className={`h-28 cursor-pointer w-28 border-2 rounded-lg mt-2 border-[#304053] ${currentIndex==0?"border-opacity-100":"border-opacity-35"} relative`}>
                     <img width={24} className="h-20 w-20 ml-3 rounded-lg" src="/assets/animation/blackdragon/1.gif" alt="pet" />
                     <small className="text-black absolute ml-1 w-full bottom-1 text-[0.7rem]">
                         BLACK DRAGON
                     </small>
                 </div>
-                <div onClick={onMintGreenDragon} className="h-28 cursor-pointer w-28 border-2 rounded-lg mt-2 border-[#304053] relative">
+                <div onClick={onMintGreenDragon} className={`h-28 cursor-pointer w-28 border-2 rounded-lg mt-2 border-[#304053] ${currentIndex==1?"border-opacity-100":"border-opacity-35"} relative`}>
                     <img width={24} className="h-20 w-20 ml-5 rounded-lg" src="/assets/animation/greendragon/1.gif" alt="pet" />
                     <small className="text-black absolute ml-1 w-full bottom-1 text-[0.7rem]">
                         GREEN DRAGON
@@ -147,7 +150,7 @@ const MintNFT = () =>{
                     </small>
                 </div> */}
             </div>
-            <div className="mt-3 flex flex-col gap-2 justify-center items-center border-2 border-[#304053] h-32 w-full rounded-lg">
+            <div className="mt-3 flex flex-col gap-2 justify-center items-center border-2 border-[#304053] h-32 w-full  rounded-lg">
                 <div className="flex flex-col text-center -gap-2">
                     <span className="text-black">MINT 1 pet </span>
                     <span className="text-black">cost 2 token</span>

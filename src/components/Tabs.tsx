@@ -50,7 +50,7 @@ const Tabs = ({petLists,index,status,error}:{petLists:any,index:number,status:an
     }
 
     const checkIsAlive = async()=>{
-        await callFunctionST("is_pet_alive",{"pet_id": 6 });
+        await callFunctionST("is_pet_alive",{"pet_id": 1 });
     }
     
     return(

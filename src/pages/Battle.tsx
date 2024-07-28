@@ -117,20 +117,24 @@ const Battle = () =>{
             )}
             <div className="bg-[#e5f2f8] screen w-full md:w-[400px] md:rounded-lg h-screen relative">
                 
+                
                 {/* <div className="mt-3 text-center flex justify-center flex-row px-2">
-                    <p className="text-black px-2 py-1 bg-slate-400 w-full rounded-lg">Next Attack: 00:15:00</p>
+                    <p className="text-black px-2 py-1 bg-slate-300 w-full rounded-lg">Next Attack: 00:15:00</p>
                 </div> */}
-                <div className="px-2 mt-2 relative fix-screen w-full h-full overflow-y-auto">
-                    <div className="mt-2 relative">
+                <div className="mt-2 relative fix-screen w-full h-full overflow-y-auto">
+                    <div className="mt-2 text-center flex justify-center flex-row px-2">
+                        <p className="text-black px-2 py-1 bg-slate-300 w-full rounded-lg">Next Attack: 00:15:00</p>
+                    </div>
+                    <div className="mt-2 relative px-2">
                         <div className="w-full responsive rounded-md flex justify-center flex-row relative">
                             {
-                                oponents.length > 0 &&(
-                                    <div className="absolute top-[47%] left-[17%] text-black">
-                                        <small>{oponents[currentIndex].name}</small>
+                                pets.length > 0 &&(
+                                    <div className="absolute top-[65%] left-[52%] text-black">
+                                        <small>{pets[currentIndex].name}</small>
                                     </div>
                                 )
                             }
-                            <img width={60} className="w-full h-full rounded-md" src="/assets/background/bg.png" alt="screen" />
+                            <img width={60} className="w-full h-full rounded-md" src="/assets/background/battle.png" alt="screen" />
                             {pets.length > 0 && pets[currentIndexPet] &&(
                                 <img className="absolute mg" src={`/assets/animation/${pets[currentIndexPet].category}/${pets[currentIndexPet].pet_evolution_phase}.gif`} alt="pet" />
                             )}
@@ -140,8 +144,7 @@ const Battle = () =>{
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {
+                        {
                         pets.length > 0 &&(
                             <div className="mt-2 bg-[#a9c6e4] p-3 relative rounded-lg flex flex-row justify-between items-center text-black">
                                 <div className="flex flex-row items-center gap-2">
@@ -167,7 +170,20 @@ const Battle = () =>{
                                 </button>
                             </div>
                         )
-                    }
+                        }
+                        <div className="mt-2 border-2 border-gray-300 flex flex-row justify-center gap-5 w-full px-2 py-3 rounded-lg text-black">
+                            <button onClick={onAttack}>
+                                {
+                                    isAttack?(
+                                        <img width={260} src="/assets/button/button-attack-enter.png" alt="btn" />
+                                    ):(
+                                        <img width={260} src="/assets/button/button-attack.png" alt="btn" />
+                                    )
+                                }
+                            </button>
+                        </div>
+                    </div>
+                    
                     {
                         isShow &&(
                             <div className="mt-2 h-[300px] absolute overflow-hidden border-2 p-2 border-slate-300 shadow-sm bg-slate-100 rounded-lg top-[14%] z-50 left-1/2 transform -translate-x-1/2 w-[95%] flex flex-col gap-2">
@@ -199,17 +215,6 @@ const Battle = () =>{
                     {/* <div className="mt-2 bg-[#a9c6e4] w-full px-3 rounded-lg text-black h-14">
                         <small>Attack Infomation</small>
                     </div> */}
-                    <div className="mt-2 border-2 border-gray-300 flex flex-row justify-center gap-5 w-full px-2 py-3 rounded-lg text-black">
-                        <button onClick={onAttack}>
-                            {
-                                isAttack?(
-                                    <img width={260} src="/assets/button/button-attack-enter.png" alt="btn" />
-                                ):(
-                                    <img width={260} src="/assets/button/button-attack.png" alt="btn" />
-                                )
-                            }
-                        </button>
-                    </div>
                     <div className="clear"/>
                 </div>
                 <Footer/>

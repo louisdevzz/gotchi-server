@@ -35,10 +35,20 @@ const Tabs = ({petLists,index,status,error}:{petLists:any,index:number,status:an
     const onBuyAccessory = async(itemId:any) =>{
         try{
             status("Loading...")
-            await callFunctionST("buy_item",{"pet_id": petLists[index].pet_id, "item_id": itemId });
-            status("Buy successfull!")
-            setTimeout(() => {
+            const tx = await callFunctionST("is_pet_alive",{"pet_id": petLists[index].pet_id });
+            if(atob(tx.status.SuccessValue) == "true"||currentIndex==3){
+                await callFunctionST("buy_item",{"pet_id": petLists[index].pet_id, "item_id": itemId });
                 status(null)
+                status("Buy successfull!")
+                setTimeout(() => {
+                    status(null)
+                }, 1000);
+                
+            }
+            status(null)
+            error('Pet is not Alive')
+            setTimeout(() => {
+                error(null)
             }, 1000);
         }catch(err){
             console.log(err)
@@ -50,7 +60,8 @@ const Tabs = ({petLists,index,status,error}:{petLists:any,index:number,status:an
     }
 
     const checkIsAlive = async()=>{
-        await callFunctionST("is_pet_alive",{"pet_id": 1 });
+        const tx = await callFunctionST("is_pet_alive",{"pet_id": 1 });
+        console.log("tx",atob(tx.status.SuccessValue))
     }
     
     return(

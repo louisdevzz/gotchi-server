@@ -10,7 +10,6 @@ const Battle = () =>{
     const [loading, setLoading] = useState<boolean>(false)
     const [account, setAccount] = useState<string|null>(localStorage.getItem("accountID")??null);
     const allListPet = JSON.parse(localStorage.getItem("list_all_pet") as string)??[];
-    const [listPets, setListPets] = useState<any>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [currentIndexPet, setCurrentIndexPet] = useState<number>(0||Number(localStorage.getItem("indexPet")));
     const [isShow, setIsShow] = useState<boolean>(false);
@@ -57,31 +56,39 @@ const Battle = () =>{
 
     const onAttack = async() =>{
         try{
-            if(pets[currentIndexPet].level <=  oponents[currentIndex].level  && oponents[currentIndex].status !== "DYING" && pets[currentIndexPet].status !== "DYING" &&  pets[currentIndexPet].last_attack_used == BigInt("0") && (oponents[currentIndex].last_attacked== BigInt("0")  ||  Math.floor((( Math.abs(Number(new Date( oponents[currentIndex].last_attacked/10000000 )) * 1000  - Date.now())) /1000)/60)/60 > 1)){
-                setIsAttack(true);
-                const tx = await callFunctionST(
-                    "attack",
-                    {
-                        "pet_id":pets[currentIndexPet].pet_id,
-                        "from_id":pets[currentIndexPet].pet_id,
-                        "to_id": oponents[currentIndex].pet_id
-                    }
-                )
-                setTimeout(()=>{
-                    setIsAttack(false)
-                },220)
-                setStauts("Attack Successfull!")
-                setTimeout(()=>{
-                    setStauts(null)
-                },1000)
-                console.log("tx",tx)
-            }else{
-                console.log("error")
-                setError("Pet not alive!")
-                setTimeout(()=>{
-                    setError(null)
-                },1000)
-            }    
+            setStauts("Attacking...")
+            setIsAttack(true)
+            setTimeout(()=>{
+                setIsAttack(false)
+            },200)
+            const tx = await callFunctionST("is_pet_alive",{"pet_id": pets[currentIndex].pet_id });
+            console.log("is_alive",atob(tx.status.SuccessValue))
+            if(atob(tx.status.SuccessValue) == "true"){
+                if(pets[currentIndexPet].level <=  oponents[currentIndex].level  && oponents[currentIndex].status !== "DYING" && pets[currentIndexPet].status !== "DYING" &&  pets[currentIndexPet].last_attack_used == BigInt("0") && (oponents[currentIndex].last_attacked== BigInt("0")  ||  Math.floor((( Math.abs(Number(new Date( oponents[currentIndex].last_attacked/10000000 )) * 1000  - Date.now())) /1000)/60)/60 > 1)){
+                    setIsAttack(true);
+                    const tx = await callFunctionST(
+                        "attack",
+                        {
+                            "pet_id":pets[currentIndexPet].pet_id,
+                            "from_id":pets[currentIndexPet].pet_id,
+                            "to_id": oponents[currentIndex].pet_id
+                        }
+                    )
+                    setTimeout(()=>{
+                        setIsAttack(false)
+                    },220)
+                    setStauts("Attack Successfull!")
+                    setTimeout(()=>{
+                        setStauts(null)
+                    },1000)
+                    console.log("tx",tx)
+                }
+            }
+            setStauts(null)
+            setError("Pet not alive!")
+            setTimeout(()=>{
+                setError(null)
+            },1000) 
         }catch(err){
             console.log(err)
             setError(error)
@@ -130,7 +137,7 @@ const Battle = () =>{
                             {
                                 pets.length > 0 &&(
                                     <div className="absolute top-[65%] left-[52%] text-black">
-                                        <small>{pets[currentIndex].name}</small>
+                                        <small>{pets[currentIndexPet].name}</small>
                                     </div>
                                 )
                             }
@@ -146,7 +153,7 @@ const Battle = () =>{
                         </div>
                         {
                         pets.length > 0 &&(
-                            <div className="mt-2 bg-[#a9c6e4] p-3 relative rounded-lg flex flex-row justify-between items-center text-black">
+                            <div onClick={()=>setIsShow((prv)=>!prv)} className="mt-2 bg-[#a9c6e4] p-3 relative rounded-lg flex flex-row justify-between items-center text-black">
                                 <div className="flex flex-row items-center gap-2">
                                     {pets.length > 0 &&(
                                         <img className="-mt-2" width={62} src={`/assets/animation/${pets[currentIndexPet].category}/${pets[currentIndexPet].pet_evolution_phase}.gif`} alt="pet" />
@@ -165,7 +172,7 @@ const Battle = () =>{
                                         </div>
                                     </div>
                                 </div>
-                                <button onClick={()=>setIsShow((prv)=>!prv)}>
+                                <button>
                                     <img width={20} className="rotate-90" src="/assets/icon/arrow_right.png" alt="arrow" />
                                 </button>
                             </div>
@@ -186,28 +193,36 @@ const Battle = () =>{
                     
                     {
                         isShow &&(
-                            <div className="mt-2 h-[300px] absolute overflow-hidden border-2 p-2 border-slate-300 shadow-sm bg-slate-100 rounded-lg top-[14%] z-50 left-1/2 transform -translate-x-1/2 w-[95%] flex flex-col gap-2">
-                                <div className="overflow-y-auto gap-2 flex flex-col">
-                                    {pets.length > 0&&pets.map((pet:any,idx:number)=>(
-                                        <div key={idx} onClick={()=>handlSelectPet(idx)} className="w-full bg-[#a9c6e4] px-1 py-2 cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75 rounded-lg flex flex-row justify-between items-center text-black">
-                                            <div className="flex flex-row items-center gap-2">
-                                                <img className="-mt-2" width={62} src={`/assets/animation/${pet.category}/${pet.pet_evolution_phase}.gif`} alt="pet" />
-                                                <div className="flex flex-col">
-                                                    <p className="text-sm">{pet.name}</p>
-                                                    <div className="flex flex-row gap-3">
-                                                        <div className="flex flex-col">
-                                                            <small>ATK: 100</small>
-                                                            <small>DEF: 100</small>
-                                                        </div>
-                                                        <div className="flex flex-col">
-                                                            <small>Status: {pet.status}</small>
-                                                            <small>Score: {pet.score}</small>
+                            <div className="bg-black fixed top-0 bg-opacity-60 z-50 h-screen screen overflow-hidden">
+                                
+                                <div className="h-[72%] w-[98%] absolute overflow-hidden border-2 p-2 border-slate-300 shadow-sm bg-slate-100 rounded-lg top-[10%] z-50 left-1/2 transform -translate-x-1/2 w-[95%] flex flex-col gap-2">
+                                    <div className="flex flex-row justify-end">
+                                        <button onClick={()=>setIsShow(false)}>
+                                            <img width={40} src="/assets/icon/close.svg" alt="close" />
+                                        </button>
+                                    </div>
+                                    <div className="overflow-y-auto gap-2 mt-2 h-full flex flex-col">
+                                        {pets.length > 0&&pets.map((pet:any,idx:number)=>(
+                                            <div key={idx} onClick={()=>handlSelectPet(idx)} className="w-full bg-[#a9c6e4] px-1 py-2 cursor-pointer hover:bg-opacity-75 focus:bg-opacity-75 rounded-lg flex flex-row justify-between items-center text-black">
+                                                <div className="flex flex-row items-center gap-2">
+                                                    <img className="-mt-2" width={62} src={`/assets/animation/${pet.category}/${pet.pet_evolution_phase}.gif`} alt="pet" />
+                                                    <div className="flex flex-col">
+                                                        <p className="text-sm">{pet.name}</p>
+                                                        <div className="flex flex-row gap-3">
+                                                            <div className="flex flex-col">
+                                                                <small>ATK: 100</small>
+                                                                <small>DEF: 100</small>
+                                                            </div>
+                                                            <div className="flex flex-col">
+                                                                <small>Status: {pet.status}</small>
+                                                                <small>Score: {pet.score}</small>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         )

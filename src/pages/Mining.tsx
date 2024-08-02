@@ -14,6 +14,7 @@ const Mining = () =>{
     const oldSeconds = Number(localStorage.getItem("timeClaim")||0)
     const [seconds,setSeconds] = useState<number>(Math.abs(Math.floor((Date.now()-oldSeconds)/1000) - 60));
     const [error, setError] = useState<string|null>(null)
+    const [isClaim, setIsClaim] = useState<boolean>(false)
 
     useEffect(()=>{
         loadAccount()
@@ -97,11 +98,11 @@ const Mining = () =>{
                 <div className="h-full fix-screen">
                     <div className="mt-2 px-2">
                         <div className="border-2 border-[#304053] shadow-sm w-full h-60 rounded-lg relative">
-                            <img width={70} className="w-full h-60 rounded-lg" src="https://giffiles.alphacoders.com/212/212460.gif" alt="gif" />
-                            <button disabled={isDisable} onClick={onMining} className="text-white flex justify-center items-center flex-row gap-2 font-semibold bg-[#2d3c53] border boder-white absolute bottom-2 w-2/4 py-3 rounded-lg left-1/2 transform -translate-x-1/2">
-                                {/* <img width={23} src="/assets/tools/mining.png" alt="mining"/>
-                                <span className="text-2xl">Claim</span> */}
-                                {
+                            <img width={70} className="w-full h-60 rounded-lg" src="/assets/background/mining-background.png" alt="gif" />
+                            <img width={70} className="absolute top-[35%] left-[60%]" src="/assets/background/stone.png" alt="stone" />
+                            <img width={150} className="absolute top-[25%] left-[35%]" src="/assets/pet/mining.gif" alt="mining" />
+                            <button disabled={isDisable} onClick={onMining} className="text-white flex justify-center items-center flex-row font-semibold absolute bottom-0 py-3 rounded-lg left-1/2 transform -translate-x-1/2">
+                                {/* {
                                     isDisable?(
                                         <CountDownTimer setIsDisable={setDisable} seconds={seconds}/>
                                     ):(
@@ -110,67 +111,33 @@ const Mining = () =>{
                                             <span className="text-2xl">Claim</span>
                                         </div>
                                     )
+                                } */}
+                                {
+                                    isDisable?(
+                                        <CountDownTimer setIsDisable={setDisable} seconds={seconds}/>
+                                    ):(
+                                        isClaim?
+                                        (
+                                            <img width={550} src="/assets/button/claim-button.png" alt="claim" />
+                                        ):(
+                                            <img width={550} src="/assets/button/claim-button.png" alt="claim" />
+                                        )
+                                    )
                                 }
-                                
                             </button>
                         </div>
                         {/* <div className="mt-2">
                             <p className="text-black">Next Mint: 00:00:00</p>
                         </div> */}
                         <div className="mt-5 pb-10 flex flex-row justify-between gap-3">
-                            <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                <div className="absolute -top-1 left-1 text-white">
-                                    <small className="text-[0.75rem]">Tool</small>
-                                </div>
-                                <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                </div>
-                                <div className="mt-5 flex flex-col gap-1 px-2">
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Lucky: </small>
-                                        <small>10%</small>
-                                    </div>
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Power: </small>
-                                        <small>10%</small>
-                                    </div>
-                                </div>
+                            <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                             </div>
-                            <div onClick={()=>setIsShowModal(true)}  className="h-44 w-36 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                <div className="absolute -top-1 left-1 text-white">
-                                    <small className="text-[0.75rem]">Tool</small>
-                                </div>
-                                <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                </div>
-                                <div className="mt-5 flex flex-col gap-1 px-2">
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Lucky: </small>
-                                        <small>10%</small>
-                                    </div>
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Power: </small>
-                                        <small>10%</small>
-                                    </div>
-                                </div>
+                            <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                             </div>
-                            <div onClick={()=>setIsShowModal(true)}  className="h-44 w-36 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                <div className="absolute -top-1 left-1 text-white">
-                                    <small className="text-[0.75rem]">Tool</small>
-                                </div>
-                                <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                    <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                </div>
-                                <div className="mt-5 flex flex-col gap-1 px-2">
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Lucky: </small>
-                                        <small>10%</small>
-                                    </div>
-                                    <div className="flex flex-row gap-4">
-                                        <small className="text-black">Power: </small>
-                                        <small>10%</small>
-                                    </div>
-                                </div>
+                            <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                             </div>
                         </div>
                     </div>
@@ -195,121 +162,29 @@ const Mining = () =>{
                                     <span className="">Remove tool</span>
                                 </button>
                             </div>
-                            <div className="w-full h-full mt-5 flex flex-row flex-wrap gap-3 overflow-y-auto items-center justify-center">
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                            <div className="w-full h-full mt-5 flex flex-row flex-wrap gap-5 gap-y-16 overflow-y-auto items-center justify-center">
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                <div className="h-44 w-28 flex items-center rounded-lg border-2 border-[#304053] bg-[#a9c6e4] bg-opacity-85 flex-col relative">
-                                    <div className="absolute -top-1 left-1 text-white">
-                                        <small className="text-[0.75rem]">Tool</small>
-                                    </div>
-                                    <div className="rounded-lg mt-7 flex justify-center items-center bg-[#fff] w-16 h-16 ">
-                                        <img width={40} src="/assets/icon/add-black.svg" alt="hamor" />
-                                    </div>
-                                    <div className="mt-5 flex flex-col gap-1 px-2">
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Lucky: </small>
-                                            <small>10%</small>
-                                        </div>
-                                        <div className="flex flex-row gap-4">
-                                            <small className="text-black">Power: </small>
-                                            <small>10%</small>
-                                        </div>
-                                    </div>
+                                <div onClick={()=>setIsShowModal(true)} className="h-44 w-36 shadow-lg ">
+                                    <img width={100} className="w-full" src="/assets/tools/card-tool.png" alt="tool" />
                                 </div>
-                                
-                            </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 )
             }
         </div>
